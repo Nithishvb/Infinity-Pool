@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Loader2 } from 'lucide-react'
 
 const formSchema = z.object({
   poolName: z.string().min(3, {
@@ -49,8 +48,8 @@ export default function CreatePool() {
   }
 
   return (
-    <div className="container mx-auto py-10 px-4 md:px-0">
-      <Card className="max-w-2xl mx-auto">
+    <div className="container mx-auto py-10 px-4 md:px-0 min-h-screen">
+      <Card className="max-w-2xl mx-auto bg-white">
         <CardHeader className="space-y-1">
           <CardTitle className="text-3xl font-bold">Create a New Investment Pool</CardTitle>
           <CardDescription>
@@ -65,11 +64,11 @@ export default function CreatePool() {
                 name="poolName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Pool Name</FormLabel>
+                    <FormLabel className="text-gray-900">Pool Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter pool name" {...field} className="bg-background" />
+                      <Input placeholder="Enter pool name" {...field} className="bg-white border-gray-200 focus-visible:ring-0 focus-visible:border-gray-300" />
                     </FormControl>
-                    <FormDescription>
+                    <FormDescription className="text-gray-500">
                       Choose a unique name for your investment pool.
                     </FormDescription>
                     <FormMessage />
@@ -81,16 +80,16 @@ export default function CreatePool() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel className="text-gray-900">Description</FormLabel>
                     <FormControl>
                       <Textarea 
                         placeholder="Describe the purpose and goals of this pool" 
                         {...field} 
-                        className="bg-background resize-none" 
+                        className="bg-white border-gray-200 focus-visible:ring-0 focus-visible:border-gray-300 resize-none" 
                         rows={4}
                       />
                     </FormControl>
-                    <FormDescription>
+                    <FormDescription className="text-gray-500">
                       Provide a clear description of the {"pool's"} objectives.
                     </FormDescription>
                     <FormMessage />
@@ -103,10 +102,10 @@ export default function CreatePool() {
                   name="assetType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Asset Type</FormLabel>
+                      <FormLabel className="text-gray-900">Asset Type</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="bg-background">
+                          <SelectTrigger className="bg-white border-gray-200 focus:ring-0 focus:border-gray-300">
                             <SelectValue placeholder="Select asset type" />
                           </SelectTrigger>
                         </FormControl>
@@ -116,7 +115,7 @@ export default function CreatePool() {
                           <SelectItem value="MULTI">Multi-chain</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormDescription>
+                      <FormDescription className="text-gray-500">
                         Choose the type of asset for this pool.
                       </FormDescription>
                       <FormMessage />
@@ -128,10 +127,10 @@ export default function CreatePool() {
                   name="votingRules"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Voting Rules</FormLabel>
+                      <FormLabel className="text-gray-900">Voting Rules</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="bg-background">
+                          <SelectTrigger className="bg-white border-gray-200 focus:ring-0 focus:border-gray-300">
                             <SelectValue placeholder="Select voting rules" />
                           </SelectTrigger>
                         </FormControl>
@@ -140,7 +139,7 @@ export default function CreatePool() {
                           <SelectItem value="SUPERMAJORITY">Supermajority</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormDescription>
+                      <FormDescription className="text-gray-500">
                         Set the voting rules for decision-making in the pool.
                       </FormDescription>
                       <FormMessage />
@@ -154,16 +153,16 @@ export default function CreatePool() {
                   name="minContribution"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Minimum Contribution</FormLabel>
+                      <FormLabel className="text-gray-900">Minimum Contribution</FormLabel>
                       <FormControl>
                         <Input 
                           type="number" 
                           {...field} 
                           onChange={e => field.onChange(+e.target.value)}
-                          className="bg-background"
+                          className="bg-white border-gray-200 focus-visible:ring-0 focus-visible:border-gray-300"
                         />
                       </FormControl>
-                      <FormDescription>
+                      <FormDescription className="text-gray-500">
                         Set the minimum contribution amount.
                       </FormDescription>
                       <FormMessage />
@@ -175,16 +174,16 @@ export default function CreatePool() {
                   name="maxContribution"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Maximum Contribution</FormLabel>
+                      <FormLabel className="text-gray-900">Maximum Contribution</FormLabel>
                       <FormControl>
                         <Input 
                           type="number" 
                           {...field} 
                           onChange={e => field.onChange(+e.target.value)}
-                          className="bg-background"
+                          className="bg-white border-gray-200 focus-visible:ring-0 focus-visible:border-gray-300"
                         />
                       </FormControl>
-                      <FormDescription>
+                      <FormDescription className="text-gray-500">
                         Set the maximum contribution amount.
                       </FormDescription>
                       <FormMessage />
@@ -197,18 +196,12 @@ export default function CreatePool() {
         </CardContent>
         <CardFooter>
           <Button 
-            className="w-full"
+            type="submit" 
             onClick={form.handleSubmit(onSubmit)} 
             disabled={isSubmitting}
+            className="w-full bg-black hover:bg-black/90 text-white"
           >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Creating Pool...
-              </>
-            ) : (
-              "Create Pool"
-            )}
+            {isSubmitting ? "Creating Pool..." : "Create Pool"}
           </Button>
         </CardFooter>
       </Card>

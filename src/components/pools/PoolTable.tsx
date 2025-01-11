@@ -7,6 +7,7 @@ interface PoolsTableProps {
   totalFunds: number;
   status: string;
   id?: number;
+  handlePoolClick: () => void;
 }
 
 export const PoolTable = ({
@@ -15,9 +16,13 @@ export const PoolTable = ({
   assetType,
   totalFunds,
   status,
+  handlePoolClick,
 }: PoolsTableProps) => {
   return (
-    <TableRow className="cursor-pointer h-[60px] border-none hover:bg-gray-800/30">
+    <TableRow
+      className="cursor-pointer h-[60px] border-none hover:bg-gray-800/30"
+      onClick={handlePoolClick}
+    >
       <TableCell>{name}</TableCell>
       <TableCell>{description}</TableCell>
       <TableCell className="text-center">{assetType}</TableCell>

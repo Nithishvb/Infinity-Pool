@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,9 +8,11 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import { PoolTable } from "./PoolTable";
 import TableToolbar from "./TableToolbar";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 const mockPools = [
   {
@@ -60,6 +62,8 @@ export default function ExplorePools() {
   const [statusFilter, setStatusFilter] = useState<string | undefined>();
   const [searchTerm, setSearchTerm] = useState("");
 
+  const router = useRouter();
+
   const filteredPools = mockPools.filter(
     (pool) =>
       (!assetFilter || pool.assetType === assetFilter) &&
@@ -68,9 +72,19 @@ export default function ExplorePools() {
         pool.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const handlePoolClick = useCallback(() => {
+    router.push("/pool/2");
+  }, [router]);
+
   return (
     <div className="container mx-auto py-10 px-20 h-screen overflow-hidden">
-      <h1 className="text-4xl font-bold mb-6">Explore Investment Pools</h1>
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-4xl font-bold">Explore Investment Pools</h1>
+        <Button onClick={() => router.push("/pool/new")} className="flex px-5 py-2 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200">
+          <Plus className="mr-1 h-4 w-4" /> 
+          Create pool
+        </Button>
+      </div>
       <TableToolbar
         searchTerm={searchTerm}
         setAssetFilter={setAssetFilter}
@@ -109,6 +123,7 @@ export default function ExplorePools() {
                 totalFunds={pool.totalFunds}
                 status={pool.status}
                 id={pool.id}
+                handlePoolClick={handlePoolClick}
               />
             ))}
           </TableBody>
