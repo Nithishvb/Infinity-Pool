@@ -49,7 +49,7 @@ export default function CreatePool() {
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-0 min-h-screen">
-      <Card className="max-w-2xl mx-auto bg-white">
+      <Card className="max-w-2xl mx-auto">
         <CardHeader className="space-y-1">
           <CardTitle className="text-3xl font-bold">Create a New Investment Pool</CardTitle>
           <CardDescription>

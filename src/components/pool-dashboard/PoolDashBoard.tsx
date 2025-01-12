@@ -34,59 +34,69 @@ export default function PoolDashboard() {
     <div className="container mx-auto py-8 px-4 md:px-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card>
+        <Card className="bg-[#1A1A1A] border-gray-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Funds</CardTitle>
-            <Wallet className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-300">
+              Total Funds
+            </CardTitle>
+            <Wallet className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-white">
               ${poolData.totalFunds.toLocaleString()}
             </div>
             <Progress
               value={(poolData.totalFunds / poolData.targetFunds) * 100}
               className="h-2 mt-2"
             />
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-xs text-gray-400 mt-2">
               {((poolData.totalFunds / poolData.targetFunds) * 100).toFixed(1)}%
               of target
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-[#1A1A1A] border-gray-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Members</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-300">
+              Members
+            </CardTitle>
+            <Users className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{poolData.memberCount}</div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Active participants
-            </p>
+            <div className="text-2xl font-bold text-white">
+              {poolData.memberCount}
+            </div>
+            <p className="text-xs text-gray-400 mt-2">Active participants</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-[#1A1A1A] border-gray-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Asset Type</CardTitle>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-300">
+              Asset Type
+            </CardTitle>
+            <ArrowUpRight className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{poolData.assetType}</div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Primary currency
-            </p>
+            <div className="text-2xl font-bold text-white">
+              {poolData.assetType}
+            </div>
+            <p className="text-xs text-gray-400 mt-2">Primary currency</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-[#1A1A1A] border-gray-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-gray-300">
               Active Proposals
             </CardTitle>
-            <Badge variant="secondary">{poolData.activeProposals}</Badge>
+            <Badge variant="secondary" className="bg-gray-800 text-gray-300">
+              {poolData.activeProposals}
+            </Badge>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{poolData.proposalCount}</div>
-            <p className="text-xs text-muted-foreground mt-2">
+            <div className="text-2xl font-bold text-white">
+              {poolData.proposalCount}
+            </div>
+            <p className="text-xs text-gray-400 mt-2">
               Total proposals created
             </p>
           </CardContent>
@@ -95,39 +105,65 @@ export default function PoolDashboard() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="proposals">Proposals</TabsTrigger>
-          <TabsTrigger value="assets">Assets</TabsTrigger>
-          <TabsTrigger value="members">Members</TabsTrigger>
+        <TabsList className="bg-[#1A1A1A] border-gray-800">
+          <TabsTrigger
+            value="overview"
+            className="data-[state=active]:bg-gray-800 text-gray-400 data-[state=active]:text-white"
+          >
+            Overview
+          </TabsTrigger>
+          <TabsTrigger
+            value="proposals"
+            className="data-[state=active]:bg-gray-800 text-gray-400 data-[state=active]:text-white"
+          >
+            Proposals
+          </TabsTrigger>
+          <TabsTrigger
+            value="assets"
+            className="data-[state=active]:bg-gray-800 text-gray-400 data-[state=active]:text-white"
+          >
+            Assets
+          </TabsTrigger>
+          <TabsTrigger
+            value="members"
+            className="data-[state=active]:bg-gray-800 text-gray-400 data-[state=active]:text-white"
+          >
+            Members
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card>
+            <Card className="bg-[#1A1A1A] border-gray-800">
               <CardHeader>
-                <CardTitle>Recent Proposals</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-white">Recent Proposals</CardTitle>
+                <CardDescription className="text-gray-400">
                   Latest proposals requiring attention
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ProposalsList limit={3} />
-                <Button variant="ghost" className="w-full mt-4">
+                <Button
+                  variant="ghost"
+                  className="w-full mt-4 text-gray-300 hover:text-white hover:bg-gray-800"
+                >
                   View All Proposals
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="bg-[#1A1A1A] border-gray-800">
               <CardHeader>
-                <CardTitle>Top Contributors</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-white">Top Contributors</CardTitle>
+                <CardDescription className="text-gray-400">
                   Members with highest contributions
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <MembersList limit={5} />
-                <Button variant="ghost" className="w-full mt-4">
+                <MembersList limit={3} />
+                <Button
+                  variant="ghost"
+                  className="w-full mt-4 text-gray-300 hover:text-white hover:bg-gray-800"
+                >
                   View All Members
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -136,10 +172,10 @@ export default function PoolDashboard() {
           </div>
         </TabsContent>
         <TabsContent value="proposals">
-          <Card>
+          <Card className="bg-[#1A1A1A] border-gray-800">
             <CardHeader>
-              <CardTitle>All Proposals</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-white">All Proposals</CardTitle>
+              <CardDescription className="text-gray-400">
                 View and vote on all pool proposals
               </CardDescription>
             </CardHeader>
@@ -149,10 +185,10 @@ export default function PoolDashboard() {
           </Card>
         </TabsContent>
         <TabsContent value="assets">
-          <Card>
+          <Card className="bg-[#1A1A1A] border-gray-800">
             <CardHeader>
-              <CardTitle>Pool Assets</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-white">Pool Assets</CardTitle>
+              <CardDescription className="text-gray-400">
                 Assets currently owned by the pool
               </CardDescription>
             </CardHeader>
@@ -162,10 +198,10 @@ export default function PoolDashboard() {
           </Card>
         </TabsContent>
         <TabsContent value="members">
-          <Card>
+          <Card className="bg-[#1A1A1A] border-gray-800">
             <CardHeader>
-              <CardTitle>Pool Members</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-white">Pool Members</CardTitle>
+              <CardDescription className="text-gray-400">
                 All members and their contributions
               </CardDescription>
             </CardHeader>
