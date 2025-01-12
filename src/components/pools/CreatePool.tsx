@@ -31,25 +31,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-const formSchema = z.object({
-  poolName: z.string().min(3, {
-    message: "Pool name must be at least 3 characters.",
-  }),
-  description: z.string().min(10, {
-    message: "Description must be at least 10 characters.",
-  }),
-  assetType: z.enum(["SOL"]),
-  targetSol: z.number().min(0),
-  minContribution: z.number().min(0),
-  maxContribution: z.number().min(0),
-});
+import { createPoolSchema } from "@/lib/zod/schemas/pool";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function CreatePool() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const router = useRouter();
+
+  const form = useForm<z.infer<typeof createPoolSchema>>({
+    resolver: zodResolver(createPoolSchema),
     defaultValues: {
       poolName: "",
       description: "",
@@ -60,12 +53,22 @@ export default function CreatePool() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsSubmitting(true);
-    console.log(values);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsSubmitting(false);
-    form.reset();
+  async function onSubmit(values: z.infer<typeof createPoolSchema>) {
+    try {
+      setIsSubmitting(true);
+      const result = await fetch("http://localhost:3000/api/pool", {
+        method: "POST",
+        body: JSON.stringify(values),
+      });
+      await result.json();
+      setIsSubmitting(false);
+      form.reset();
+      toast.success('Pool Created successfully');
+      router.push("/pool");
+    } catch (err) {
+      console.log("Error creating pools :", err);
+      toast.error('Error creating pools');
+    }
   }
 
   return (
@@ -233,7 +236,14 @@ export default function CreatePool() {
             disabled={isSubmitting}
             className="w-full bg-black hover:bg-black/90 text-white"
           >
-            {isSubmitting ? "Creating Pool..." : "Create Pool"}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating Pool...
+              </>
+            ) : (
+              "Create Pool"
+            )}
           </Button>
         </CardFooter>
       </Card>

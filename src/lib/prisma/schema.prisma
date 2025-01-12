@@ -42,6 +42,7 @@ model Pool {
   minContribution   Float
   maxContribution   Float
   targetFunds       Float
+  totalCollectedSol Float     @default(0)
   creator     User       @relation("UserPools", fields: [creatorId], references: [id])
   status      PoolStatus @default(OPEN)
   createdAt   DateTime   @default(now())
