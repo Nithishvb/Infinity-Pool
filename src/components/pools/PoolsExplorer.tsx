@@ -60,8 +60,8 @@ export default function ExplorePools() {
     });
   }, [pools, assetFilter, statusFilter, searchTerm]);
 
-  const handlePoolClick = useCallback(() => {
-    router.push("/pool/2");
+  const handlePoolClick = useCallback((poolId: string) => {
+    router.push(`/pool/${poolId}`);
   }, [router]);
 
   return (

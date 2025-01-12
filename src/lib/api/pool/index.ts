@@ -29,10 +29,27 @@ export const createNewPool = async (data: INewPoolType) => {
         maxContribution,
         targetFunds: targetSol,
         creatorId: "1",
-        totalCollectedSol: 0
+        totalCollectedSol: 0,
       },
     });
     return pool;
+  } catch (err) {
+    throw new Error((err as Error).message);
+  }
+};
+
+export const poolDetails = async (poolId: string) => {
+  try {
+    const poolData = await prisma.pool.findUnique({
+      where: {
+        id: poolId,
+      },
+      include: {
+        proposals: true,
+        contributions: true
+      }
+    });
+    return poolData;
   } catch (err) {
     throw new Error((err as Error).message);
   }

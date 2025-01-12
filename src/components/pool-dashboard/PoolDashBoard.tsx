@@ -15,21 +15,13 @@ import { ArrowUpRight, ChevronRight, Users, Wallet } from "lucide-react";
 import { ProposalsList } from "./ProposalsList";
 import { MembersList } from "./MembersList";
 import { AssetsList } from "./AssetsList";
+import { IPoolDetails } from "@/lib/types";
 
-// Mock data for the example
-const poolData = {
-  name: "DeFi Yield Optimization",
-  description:
-    "A collective pool focused on maximizing yields through DeFi protocols",
-  assetType: "ETH",
-  totalFunds: 2500000,
-  targetFunds: 3000000,
-  memberCount: 48,
-  proposalCount: 12,
-  activeProposals: 3,
-};
-
-export default function PoolDashboard() {
+export default function PoolDashboard({
+  poolsDetails
+}: {
+  poolsDetails: IPoolDetails
+}) {
   return (
     <div className="container mx-auto py-8 px-4 md:px-6">
       {/* Stats Cards */}
@@ -43,14 +35,14 @@ export default function PoolDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">
-              ${poolData.totalFunds.toLocaleString()}
+              ${poolsDetails.totalCollectedSol.toLocaleString()}
             </div>
             <Progress
-              value={(poolData.totalFunds / poolData.targetFunds) * 100}
+              value={(poolsDetails.totalCollectedSol / poolsDetails.targetFunds) * 100}
               className="h-2 mt-2"
             />
             <p className="text-xs text-gray-400 mt-2">
-              {((poolData.totalFunds / poolData.targetFunds) * 100).toFixed(1)}%
+              {((poolsDetails.totalCollectedSol / poolsDetails.targetFunds) * 100).toFixed(1)}%
               of target
             </p>
           </CardContent>
@@ -64,7 +56,7 @@ export default function PoolDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">
-              {poolData.memberCount}
+              {poolsDetails.contributions.length}
             </div>
             <p className="text-xs text-gray-400 mt-2">Active participants</p>
           </CardContent>
@@ -78,7 +70,7 @@ export default function PoolDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">
-              {poolData.assetType}
+              {poolsDetails.assetType}
             </div>
             <p className="text-xs text-gray-400 mt-2">Primary currency</p>
           </CardContent>
@@ -89,12 +81,12 @@ export default function PoolDashboard() {
               Active Proposals
             </CardTitle>
             <Badge variant="secondary" className="bg-gray-800 text-gray-300">
-              {poolData.activeProposals}
+              {poolsDetails.proposals.length}
             </Badge>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">
-              {poolData.proposalCount}
+              {poolsDetails.proposals.length}
             </div>
             <p className="text-xs text-gray-400 mt-2">
               Total proposals created
