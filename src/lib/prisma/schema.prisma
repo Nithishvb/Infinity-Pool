@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(cuid())
+  email         String?       @unique // Nullable for non-email-based users (e.g., wallet-only)
+  username      String?       @unique // Optional: May be provided later by the user
+  walletAddress String?       @unique // Nullable for users with only email/social login
+  loginProvider LoginProvider // Enum to track how the user logged in (e.g., Google, Email, Wallet)
+  profileImage  String? // Optional: Profile picture URL (e.g., from Google or user upload)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relationships
+  pools         Pool[]         @relation("UserPools")
+  contributions Contribution[]
+  votes         Vote[]
+
+  // Additional for AppKit Features
+  isVerified    Boolean @default(false) // Whether the email is verified
+  externalId    String? @unique // Stores unique ID for Google/Facebook logins (e.g., Google user ID)
+  socialHandles Json? // Optional: To store any social handles provided during onboarding (e.g., Twitter/Discord)
+
+  // Optional Fields for Enhanced Features
+  lastLogin          DateTime? // Timestamp of last login
+  Proposal           Proposal[]
+  TransactionHistory TransactionHistory[]
+}
+
+model Pool {
+  id          String     @id @default(cuid())
+  name        String
+  description String
+  assetType   String 
+  creatorId   String
+  minContribution   Float
+  maxContribution   Float
+  targetFunds       Float
+  creator     User       @relation("UserPools", fields: [creatorId], references: [id])
+  status      PoolStatus @default(OPEN)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  proposals          Proposal[]
+  contributions      Contribution[]
+  TransactionHistory TransactionHistory[]
+}
+
+model Proposal {
+  id          String         @id @default(cuid())
+  description String
+  type        ProposalType // BUY or SELL
+  poolId      String
+  pool        Pool           @relation(fields: [poolId], references: [id])
+  proposerId  String
+  proposer    User           @relation(fields: [proposerId], references: [id])
+  status      ProposalStatus @default(PENDING) // PENDING, APPROVED, REJECTED
+  createdAt   DateTime       @default(now())
+
+  votes Vote[]
+}
+
+model Vote {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  proposalId String
+  proposal   Proposal @relation(fields: [proposalId], references: [id])
+  vote       Boolean // TRUE for approval, FALSE for rejection
+  createdAt  DateTime @default(now())
+}
+
+model Contribution {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  poolId    String
+  pool      Pool     @relation(fields: [poolId], references: [id])
+  amount    Float // Contribution amount in pool's asset type
+  createdAt DateTime @default(now())
+}
+
+model TransactionHistory {
+  id              String          @id @default(cuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  poolId          String
+  pool            Pool            @relation(fields: [poolId], references: [id])
+  transactionType TransactionType // CONTRIBUTION, WITHDRAWAL, PURCHASE, SALE
+  amount          Float
+  assetType       String // E.g., "SOL", "ETH"
+  createdAt       DateTime        @default(now())
+}
+
+enum PoolStatus {
+  OPEN
+  CLOSED
+}
+
+enum ProposalType {
+  BUY
+  SELL
+}
+
+enum ProposalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum TransactionType {
+  CONTRIBUTION
+  WITHDRAWAL
+  PURCHASE
+  SALE
+}
+
+enum LoginProvider {
+  EMAIL
+  GOOGLE
+  WALLET
+}

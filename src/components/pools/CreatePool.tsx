@@ -1,15 +1,36 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const formSchema = z.object({
   poolName: z.string().min(3, {
@@ -18,14 +39,14 @@ const formSchema = z.object({
   description: z.string().min(10, {
     message: "Description must be at least 10 characters.",
   }),
-  assetType: z.enum(["SOL", "ETH", "MULTI"]),
-  votingRules: z.enum(["MAJORITY", "SUPERMAJORITY"]),
+  assetType: z.enum(["SOL"]),
+  targetSol: z.number().min(0),
   minContribution: z.number().min(0),
   maxContribution: z.number().min(0),
-})
+});
 
 export default function CreatePool() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -33,27 +54,30 @@ export default function CreatePool() {
       poolName: "",
       description: "",
       assetType: "SOL",
-      votingRules: "MAJORITY",
+      targetSol: 0,
       minContribution: 0,
       maxContribution: 0,
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsSubmitting(true)
-    console.log(values)
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    setIsSubmitting(false)
-    form.reset()
+    setIsSubmitting(true);
+    console.log(values);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setIsSubmitting(false);
+    form.reset();
   }
 
   return (
     <div className="container mx-auto py-10 px-4 md:px-0 min-h-screen">
       <Card className="max-w-2xl mx-auto">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl font-bold">Create a New Investment Pool</CardTitle>
+          <CardTitle className="text-3xl font-bold">
+            Create a New Investment Pool
+          </CardTitle>
           <CardDescription>
-            Set up your investment pool in just a few steps. Fill out the details below to get started.
+            Set up your investment pool in just a few steps. Fill out the
+            details below to get started.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -66,7 +90,11 @@ export default function CreatePool() {
                   <FormItem>
                     <FormLabel className="text-gray-900">Pool Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter pool name" {...field} className="bg-white border-gray-200 focus-visible:ring-0 focus-visible:border-gray-300" />
+                      <Input
+                        placeholder="Enter pool name"
+                        {...field}
+                        className="bg-white border-gray-200 focus-visible:ring-0 focus-visible:border-gray-300"
+                      />
                     </FormControl>
                     <FormDescription className="text-gray-500">
                       Choose a unique name for your investment pool.
@@ -82,10 +110,10 @@ export default function CreatePool() {
                   <FormItem>
                     <FormLabel className="text-gray-900">Description</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Describe the purpose and goals of this pool" 
-                        {...field} 
-                        className="bg-white border-gray-200 focus-visible:ring-0 focus-visible:border-gray-300 resize-none" 
+                      <Textarea
+                        placeholder="Describe the purpose and goals of this pool"
+                        {...field}
+                        className="bg-white border-gray-200 focus-visible:ring-0 focus-visible:border-gray-300 resize-none"
                         rows={4}
                       />
                     </FormControl>
@@ -102,8 +130,13 @@ export default function CreatePool() {
                   name="assetType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-900">Asset Type</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormLabel className="text-gray-900">
+                        Asset Type
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger className="bg-white border-gray-200 focus:ring-0 focus:border-gray-300">
                             <SelectValue placeholder="Select asset type" />
@@ -111,8 +144,6 @@ export default function CreatePool() {
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="SOL">SOL</SelectItem>
-                          <SelectItem value="ETH">ETH</SelectItem>
-                          <SelectItem value="MULTI">Multi-chain</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormDescription className="text-gray-500">
@@ -124,23 +155,20 @@ export default function CreatePool() {
                 />
                 <FormField
                   control={form.control}
-                  name="votingRules"
+                  name="targetSol"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-900">Voting Rules</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger className="bg-white border-gray-200 focus:ring-0 focus:border-gray-300">
-                            <SelectValue placeholder="Select voting rules" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="MAJORITY">Majority</SelectItem>
-                          <SelectItem value="SUPERMAJORITY">Supermajority</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <FormLabel className="text-gray-900">
+                        Target Sol
+                      </FormLabel>
+                      <Input
+                        type="number"
+                        {...field}
+                        onChange={(e) => field.onChange(+e.target.value)}
+                        className="bg-white border-gray-200 focus-visible:ring-0 focus-visible:border-gray-300"
+                      />
                       <FormDescription className="text-gray-500">
-                        Set the voting rules for decision-making in the pool.
+                        Set the target SOL for the pool.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -153,17 +181,19 @@ export default function CreatePool() {
                   name="minContribution"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-900">Minimum Contribution</FormLabel>
+                      <FormLabel className="text-gray-900">
+                        Minimum Contribution
+                      </FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          {...field} 
-                          onChange={e => field.onChange(+e.target.value)}
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) => field.onChange(+e.target.value)}
                           className="bg-white border-gray-200 focus-visible:ring-0 focus-visible:border-gray-300"
                         />
                       </FormControl>
                       <FormDescription className="text-gray-500">
-                        Set the minimum contribution amount.
+                        Set the minimum contribution SOL.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -174,17 +204,19 @@ export default function CreatePool() {
                   name="maxContribution"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-900">Maximum Contribution</FormLabel>
+                      <FormLabel className="text-gray-900">
+                        Maximum Contribution
+                      </FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          {...field} 
-                          onChange={e => field.onChange(+e.target.value)}
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) => field.onChange(+e.target.value)}
                           className="bg-white border-gray-200 focus-visible:ring-0 focus-visible:border-gray-300"
                         />
                       </FormControl>
                       <FormDescription className="text-gray-500">
-                        Set the maximum contribution amount.
+                        Set the maximum contribution SOL.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -195,9 +227,9 @@ export default function CreatePool() {
           </Form>
         </CardContent>
         <CardFooter>
-          <Button 
-            type="submit" 
-            onClick={form.handleSubmit(onSubmit)} 
+          <Button
+            type="submit"
+            onClick={form.handleSubmit(onSubmit)}
             disabled={isSubmitting}
             className="w-full bg-black hover:bg-black/90 text-white"
           >
@@ -206,6 +238,5 @@ export default function CreatePool() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
-
