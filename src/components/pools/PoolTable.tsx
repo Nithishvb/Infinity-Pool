@@ -6,7 +6,7 @@ interface PoolsTableProps {
   assetType: string;
   totalFunds: number;
   status: string;
-  id?: number;
+  id?: string;
   handlePoolClick: () => void;
 }
 
@@ -26,7 +26,7 @@ export const PoolTable = ({
       <TableCell>{name}</TableCell>
       <TableCell>{description}</TableCell>
       <TableCell className="text-center">{assetType}</TableCell>
-      <TableCell className="text-center text-[#92F7CB]">{totalFunds}</TableCell>
+      <TableCell className="text-center text-[#92F7CB]">${totalFunds}</TableCell>
       <TableCell>
         <span className="dark:bg-purple-900 px-2 py-1 rounded text-sm text-[#92F7CB]">
           {status}

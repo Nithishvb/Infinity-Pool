@@ -30,7 +30,7 @@ const TableToolbar = ({
             <SelectValue placeholder="Filter by asset type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="none">All Assets</SelectItem>
+            <SelectItem value="NONE">All Assets</SelectItem>
             <SelectItem value="SOL">SOL</SelectItem>
             <SelectItem value="ETH">ETH</SelectItem>
             <SelectItem value="MULTI">Multi-chain</SelectItem>
@@ -55,9 +55,9 @@ const TableToolbar = ({
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="none">All Status</SelectItem>
-            <SelectItem value="open">Open</SelectItem>
-            <SelectItem value="closed">Closed</SelectItem>
+            <SelectItem value="NONE">All Status</SelectItem>
+            <SelectItem value="OPEN">Open</SelectItem>
+            <SelectItem value="CLOSES">Closed</SelectItem>
           </SelectContent>
         </Select>
       </div>
