@@ -3,31 +3,16 @@
 import PoolDashboard from "@/components/pool-dashboard/PoolDashBoard";
 import { Button } from "@/components/ui/button";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { IPoolDetails } from "@/lib/types";
+import { useFetch } from "@/hooks/useFetch";
 import { Plus } from "lucide-react";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 export default function PoolDetails() {
-  const [poolsDetails, setPoolDetails] = useState<IPoolDetails | undefined>(
-    undefined
-  );
-  const router = useParams();
-  const { id } = router;
+  const params = useParams();
+  const router = useRouter();
+  const { id } = params;
 
-  useEffect(() => {
-    fetchPoolDetails();
-  }, []);
-
-  const fetchPoolDetails = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/pool/${id}`);
-      const res = await response.json();
-      setPoolDetails(res.data);
-    } catch (err) {
-      console.log("Error fetch pool details :", (err as Error).message);
-    }
-  };
+  const { data: poolsDetails } = useFetch(`pool/${id}`);
 
   if (!poolsDetails) {
     return (
@@ -49,6 +34,9 @@ export default function PoolDetails() {
             <p className="mt-1 text-gray-300">{poolsDetails?.description}</p>
           </div>
           <div className="flex items-center gap-3">
+            <Button onClick={() => router.push(`/pool/${id}/contribute`)} className="px-8 py-2 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200">
+              Add funds
+            </Button>
             <Button className="px-8 py-2 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200">
               Withdraw Funds
             </Button>

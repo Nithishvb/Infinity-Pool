@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -14,55 +14,46 @@ import { PoolTable } from "./PoolTable";
 import TableToolbar from "./TableToolbar";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { IPool } from "@/lib/types";
 import LoadingSpinner from "../ui/LoadingSpinner";
+import { useFetch } from "@/hooks/useFetch";
 
 export default function ExplorePools() {
   const [assetFilter, setAssetFilter] = useState<string | undefined>("NONE");
   const [statusFilter, setStatusFilter] = useState<string | undefined>("NONE");
   const [searchTerm, setSearchTerm] = useState("");
-  const [pools, setPools] = useState<IPool[]>([]);
 
   const router = useRouter();
 
-  useEffect(() => {
-    fetchPools();
-  }, []);
-
-  const fetchPools = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/pool", {
-        method: "GET",
-      });
-      const res = await response.json();
-      console.log("Pools data", res);
-      setPools(res.data);
-    } catch (err) {
-      console.log("Erro fetching pools :", (err as Error).message);
-    }
-  };
+  const { data: pools } = useFetch("pool");
 
   const filteredPools = useMemo(() => {
     if (assetFilter === "NONE" && statusFilter === "NONE" && !searchTerm) {
       return pools;
     }
 
-    return pools.filter((pool) => {
-      const matchesAssetType =
-        assetFilter === "NONE" || pool.assetType === assetFilter;
-      const matchesStatus =
-        statusFilter === "NONE" || pool.status === statusFilter;
-      const matchesSearchTerm =
-        pool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        pool.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return (
+      pools &&
+      Array.isArray(pools) &&
+      pools.filter((pool) => {
+        const matchesAssetType =
+          assetFilter === "NONE" || pool.assetType === assetFilter;
+        const matchesStatus =
+          statusFilter === "NONE" || pool.status === statusFilter;
+        const matchesSearchTerm =
+          pool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          pool.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-      return matchesAssetType && matchesStatus && matchesSearchTerm;
-    });
+        return matchesAssetType && matchesStatus && matchesSearchTerm;
+      })
+    );
   }, [pools, assetFilter, statusFilter, searchTerm]);
 
-  const handlePoolClick = useCallback((poolId: string) => {
-    router.push(`/pool/${poolId}`);
-  }, [router]);
+  const handlePoolClick = useCallback(
+    (poolId: string) => {
+      router.push(`/pool/${poolId}`);
+    },
+    [router]
+  );
 
   return (
     <div className="container mx-auto py-10 px-20 h-screen overflow-hidden">
@@ -105,7 +96,7 @@ export default function ExplorePools() {
             </TableRow>
           </TableHeader>
           <TableBody className="w-full">
-            {filteredPools.length > 0 ? (
+            {Array.isArray(filteredPools) && filteredPools.length > 0 ? (
               filteredPools.map((pool) => (
                 <PoolTable
                   key={pool.id}

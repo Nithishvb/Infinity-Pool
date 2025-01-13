@@ -17,7 +17,7 @@ export const PoolTable = ({
   totalFunds,
   status,
   handlePoolClick,
-  id
+  id,
 }: PoolsTableProps) => {
   return (
     <TableRow
