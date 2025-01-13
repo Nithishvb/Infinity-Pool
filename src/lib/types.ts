@@ -28,4 +28,5 @@ export interface IPoolDetails {
   updatedAt: string;
   proposals: [],
   contributions: []
+  assets: []
 }

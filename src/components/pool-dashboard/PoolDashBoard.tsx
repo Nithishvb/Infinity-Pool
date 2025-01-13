@@ -18,9 +18,9 @@ import { AssetsList } from "./AssetsList";
 import { IPoolDetails } from "@/lib/types";
 
 export default function PoolDashboard({
-  poolsDetails
+  poolsDetails,
 }: {
-  poolsDetails: IPoolDetails
+  poolsDetails: IPoolDetails;
 }) {
   return (
     <div className="container mx-auto py-8 px-4 md:px-6">
@@ -38,12 +38,18 @@ export default function PoolDashboard({
               ${poolsDetails.totalCollectedSol.toLocaleString()}
             </div>
             <Progress
-              value={(poolsDetails.totalCollectedSol / poolsDetails.targetFunds) * 100}
+              value={
+                (poolsDetails.totalCollectedSol / poolsDetails.targetFunds) *
+                100
+              }
               className="h-2 mt-2"
             />
             <p className="text-xs text-gray-400 mt-2">
-              {((poolsDetails.totalCollectedSol / poolsDetails.targetFunds) * 100).toFixed(1)}%
-              of target
+              {(
+                (poolsDetails.totalCollectedSol / poolsDetails.targetFunds) *
+                100
+              ).toFixed(1)}
+              % of target
             </p>
           </CardContent>
         </Card>
@@ -185,7 +191,11 @@ export default function PoolDashboard({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <AssetsList />
+              {poolsDetails.assets.length > 0 ? (
+                <AssetsList />
+              ) : (
+                <div className="text-white text-center p-4">No assets have been earned from this pool yet.</div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

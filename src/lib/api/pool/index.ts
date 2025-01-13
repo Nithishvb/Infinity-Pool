@@ -46,7 +46,8 @@ export const poolDetails = async (poolId: string) => {
       },
       include: {
         proposals: true,
-        contributions: true
+        contributions: true,
+        assets: true
       }
     });
     return poolData;
