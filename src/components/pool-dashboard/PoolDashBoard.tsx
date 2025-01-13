@@ -86,7 +86,7 @@ export default function PoolDashboard({
             <CardTitle className="text-sm font-medium text-gray-300">
               Active Proposals
             </CardTitle>
-            <Badge variant="secondary" className="bg-gray-800 text-gray-300">
+            <Badge variant="secondary" className="bg-gray-800 text-gray-300 hover:bg-gray-800">
               {poolsDetails.proposals.length}
             </Badge>
           </CardHeader>

@@ -44,7 +44,7 @@ const TableToolbar = ({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Filter by name"
-          className="w-full pl-10 border-gray-600 placeholder:text-[#8B8B8B] font-mono text-base h-[36px]
+          className="w-full pl-10 border-gray-600 placeholder:text-[#8B8B8B] text-base h-[36px]
         focus-visible:ring-0 focus-visible:ring-offset-0
         hover:border-gray-400 transition-colors"
         />

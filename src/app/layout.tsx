@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
+import ContextProvider from "@/provider/ReownAppkitProvider";
 
 const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '700']
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -23,25 +24,27 @@ export default function RootLayout({
       <body
         className={`${poppins.className} antialiased bg-[#181c1e] text-white`}
       >
-        {children}
-        <Toaster
-          toastOptions={{
-            success: {
-              style: {
-                background: "green",
-                color: "white",
-                height: "40px",
-                padding: "0px 20px"
+        <ContextProvider>
+          {children}
+          <Toaster
+            toastOptions={{
+              success: {
+                style: {
+                  background: "green",
+                  color: "white",
+                  height: "40px",
+                  padding: "0px 20px",
+                },
               },
-            },
-            error: {
-              style: {
-                background: 'red',
-                color: "white"
+              error: {
+                style: {
+                  background: "red",
+                  color: "white",
+                },
               },
-            },
-          }}
-        />
+            }}
+          />
+        </ContextProvider>
       </body>
     </html>
   );
