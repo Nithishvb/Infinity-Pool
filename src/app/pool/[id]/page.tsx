@@ -40,7 +40,7 @@ export default function PoolDetails() {
             <Button className="px-8 py-2 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200">
               Withdraw Funds
             </Button>
-            <Button className="shadow-[0_4px_14px_0_rgb(0,118,255,39%)] hover:shadow-[0_6px_20px_rgba(0,118,255,23%)] hover:bg-white px-4 py-2 bg-white rounded-md text-black font-light transition duration-200 ease-linear">
+            <Button onClick={() => router.push(`/proposal/new/${id}`)} className="shadow-[0_4px_14px_0_rgb(0,118,255,39%)] hover:shadow-[0_6px_20px_rgba(0,118,255,23%)] hover:bg-white px-4 py-2 bg-white rounded-md text-black font-light transition duration-200 ease-linear">
               <Plus className="mr-1 h-4 w-4" /> Create Proposal
             </Button>
           </div>
