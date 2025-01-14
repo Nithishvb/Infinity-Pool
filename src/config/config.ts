@@ -34,7 +34,7 @@ const modal = createAppKit({
     name: "AppKit Next.js Example",
     description: "AppKit Next.js App Router Example",
     url: "https://reown.com/appkit",
-    icons: ["https://avatars.githubusercontent.com/u/179229932?s=200&v=4"],
+    icons: ["https://avatars.githubusercontent.com/u/179229932?s=200&v=4"]
   },
   projectId,
   themeMode: "light",
