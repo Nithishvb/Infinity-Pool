@@ -1,29 +1,50 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useAppKit , useAppKitEvents } from "@/config/config";
+import { useAppKit, useAppKitAccount, useAppKitEvents } from "@/config/config";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 export const LoginForm = () => {
-  const { open, } = useAppKit();  
+  const { open } = useAppKit();
   const { data } = useAppKitEvents();
+  const { address, embeddedWalletInfo } = useAppKitAccount();
   const router = useRouter();
 
   const openAppKit = () => {
-   open();
+    open();
   };
 
   useEffect(() => {
-    if(data.event === "CONNECT_SUCCESS"){
-      toast.success("User signed in");
-      router.push("/pool");
+    if (data.event === "CONNECT_SUCCESS") {
+      storeUserdata();
     }
-    if(data.event === "CONNECT_ERROR"){
+    if (data.event === "CONNECT_ERROR") {
       toast.error("User signed in");
     }
   }, [data]);
+
+  const storeUserdata = async () => {
+    try {
+      const userData = {
+        email: embeddedWalletInfo?.user?.email || "",
+        walletAddress: address,
+        loginProvider: embeddedWalletInfo?.user?.email ? "EMAIL" : "WALLET",
+        isVerified: true,
+      };
+      const response = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        body: JSON.stringify(userData),
+      });
+      const res = await response.json();
+      localStorage.setItem("userAuth", JSON.stringify(res.data));
+      toast.success("User signed in");
+      router.push("/pool");
+    } catch (err) {
+      console.log("Error creating user :", err);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-white p-4">

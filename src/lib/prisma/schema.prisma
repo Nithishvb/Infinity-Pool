@@ -57,7 +57,7 @@ model Pool {
 model Proposal {
   id          String         @id @default(cuid())
   description String
-  type        ProposalType // BUY or SELL
+  type        ProposalType 
   poolId      String
   pool        Pool           @relation(fields: [poolId], references: [id])
   proposerId  String
