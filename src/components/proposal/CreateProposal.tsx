@@ -67,7 +67,7 @@ export default function CreateProposal() {
         poolId: params.id,
         proposerId: "cm5wkmh4q0000traoutqwwmae",
       };
-      await handleGovernanceProposal()
+      await handleGovernanceProposal();
       const response = await fetch("http://localhost:3000/api/proposal", {
         method: "POST",
         body: JSON.stringify(proposalData),

@@ -30,3 +30,36 @@ export interface IPoolDetails {
   contributions: []
   assets: []
 }
+
+enum ProposalType {
+  "BUY",
+  "SELL",
+}
+
+enum ProposalStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
+
+interface Pool {
+  id: string;
+}
+
+interface User {
+  id: string;
+}
+
+
+export interface Proposal {
+  id: string;
+  description: string;
+  type: ProposalType;
+  poolId: string;
+  pool: Pool;
+  proposerId: string;
+  proposer: User;
+  status: ProposalStatus;
+  createdAt: Date;
+  votes: []
+}

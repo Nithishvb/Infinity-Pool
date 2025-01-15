@@ -86,7 +86,10 @@ export default function PoolDashboard({
             <CardTitle className="text-sm font-medium text-gray-300">
               Active Proposals
             </CardTitle>
-            <Badge variant="secondary" className="bg-gray-800 text-gray-300 hover:bg-gray-800">
+            <Badge
+              variant="secondary"
+              className="bg-gray-800 text-gray-300 hover:bg-gray-800"
+            >
               {poolsDetails.proposals.length}
             </Badge>
           </CardHeader>
@@ -139,14 +142,25 @@ export default function PoolDashboard({
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ProposalsList limit={3} />
-                <Button
-                  variant="ghost"
-                  className="w-full mt-4 text-gray-300 hover:text-white hover:bg-gray-800"
-                >
-                  View All Proposals
-                  <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
+                {poolsDetails.proposals.length > 0 ? (
+                  <>
+                    <ProposalsList
+                      limit={3}
+                      proposals={poolsDetails.proposals}
+                    />
+                    <Button
+                      variant="ghost"
+                      className="w-full mt-4 text-gray-300 hover:text-white hover:bg-gray-800"
+                    >
+                      View All Proposals
+                      <ChevronRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </>
+                ) : (
+                  <div className="text-white text-center p-4">
+                    No proposal have been created from this pool yet.
+                  </div>
+                )}
               </CardContent>
             </Card>
             <Card className="bg-[#1A1A1A] border-gray-800">
@@ -178,7 +192,7 @@ export default function PoolDashboard({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ProposalsList />
+              <ProposalsList proposals={poolsDetails.proposals} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -194,7 +208,9 @@ export default function PoolDashboard({
               {poolsDetails.assets.length > 0 ? (
                 <AssetsList />
               ) : (
-                <div className="text-white text-center p-4">No assets have been earned from this pool yet.</div>
+                <div className="text-white text-center p-4">
+                  No assets have been earned from this pool yet.
+                </div>
               )}
             </CardContent>
           </Card>
