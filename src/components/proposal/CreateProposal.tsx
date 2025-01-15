@@ -34,11 +34,19 @@ import {
 import { createNewProposalSchema } from "@/lib/zod/schemas/proposal";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
+import { getGovernanceProgramVersion, getSignatoryRecordAddress, VoteType, withCreateProposal, withSignOffProposal } from '@solana/spl-governance';
+import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
+import { useAppKitAccount } from "@/config/config";
+
+const GOVERNANCE_PROGRAM_ID = new PublicKey(
+  "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+);
 
 export default function CreateProposal() {
   const params = useParams();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { address } = useAppKitAccount();
 
   const form = useForm<z.infer<typeof createNewProposalSchema>>({
     resolver: zodResolver(createNewProposalSchema),
@@ -59,6 +67,7 @@ export default function CreateProposal() {
         poolId: params.id,
         proposerId: "cm5wkmh4q0000traoutqwwmae",
       };
+      await handleGovernanceProposal()
       const response = await fetch("http://localhost:3000/api/proposal", {
         method: "POST",
         body: JSON.stringify(proposalData),
@@ -70,6 +79,54 @@ export default function CreateProposal() {
       console.log("Error creating pools :", err);
       toast.error("Error creating pools");
     }
+  };
+
+  const handleGovernanceProposal = async () => {
+
+    const programVersion = await getGovernanceProgramVersion(
+      new Connection("https://api.testnet.solana.com"),
+      GOVERNANCE_PROGRAM_ID,
+    );
+
+    const proposerAddress = new PublicKey(address || "");
+    const poolId = new PublicKey(params.id || "");
+
+    const proposalAddress = await withCreateProposal(
+      [],
+      GOVERNANCE_PROGRAM_ID,
+      programVersion,
+      proposerAddress,
+      poolId,
+      proposerAddress,
+      "NFT Snipper",
+      "Vote for buying an NFT #331",
+      proposerAddress,
+      poolId,
+      undefined,
+      VoteType.SINGLE_CHOICE,
+      ["Approve"],
+      true,
+      proposerAddress,
+    );
+
+    const signatory = await getSignatoryRecordAddress(
+      GOVERNANCE_PROGRAM_ID,
+      proposalAddress,
+      poolId,
+    );
+
+    const signOffInstructions: TransactionInstruction[] = [];
+    await withSignOffProposal(
+      signOffInstructions,
+      GOVERNANCE_PROGRAM_ID,
+      programVersion,
+      proposerAddress,
+      poolId,
+      proposalAddress,
+      poolId,
+      signatory,
+      undefined,
+    );
   }
 
   return (
