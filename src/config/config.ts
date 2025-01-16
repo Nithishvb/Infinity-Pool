@@ -8,11 +8,12 @@ import {
   useWalletInfo,
   useAppKitNetwork,
   useDisconnect,
+  useAppKitProvider
 } from "@reown/appkit/react";
 import { SolanaAdapter } from "@reown/appkit-adapter-solana";
 import {
   solanaTestnet,
-  type AppKitNetwork,
+  type AppKitNetwork
 } from "@reown/appkit/networks";
 
 export const projectId =
@@ -37,6 +38,7 @@ const modal = createAppKit({
     icons: ["https://avatars.githubusercontent.com/u/179229932?s=200&v=4"]
   },
   projectId,
+  themeMode: "light",
   features: {
     email: true,
     socials: ["google"],
@@ -54,4 +56,5 @@ export {
   useWalletInfo,
   useAppKitNetwork,
   useDisconnect,
+  useAppKitProvider
 };

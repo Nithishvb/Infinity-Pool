@@ -26,7 +26,7 @@ export interface IPoolDetails {
   status: "OPEN" | "CLOSED";
   createdAt: string;
   updatedAt: string;
-  proposals: [],
+  proposals: Proposal[],
   contributions: []
   assets: []
 }

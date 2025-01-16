@@ -36,7 +36,7 @@ export function ProposalsList({
                     statusStyles[proposal.status as keyof typeof statusStyles]
                   }
                 >
-                  {proposal.status}
+                  {proposal.status === "PENDING" ? "Active" : proposal.status}
                 </Badge>
               </div>
               <div className="flex items-center gap-4 mt-1">

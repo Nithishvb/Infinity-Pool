@@ -95,7 +95,7 @@ export default function PoolDashboard({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">
-              {poolsDetails.proposals.length}
+              {poolsDetails.proposals.map((val) => val.status === "PENDING").length}
             </div>
             <p className="text-xs text-gray-400 mt-2">
               Total proposals created
