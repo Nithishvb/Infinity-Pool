@@ -35,11 +35,33 @@ import { createPoolSchema } from "@/lib/zod/schemas/pool";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import * as anchor from "@project-serum/anchor";
+import InfinityPool from "@/config/idl.json";
+import { PublicKey } from "@solana/web3.js";
+
+const connection = new anchor.web3.Connection(
+  "https://api.devnet.solana.com",
+  "confirmed"
+);
+const provider = new anchor.AnchorProvider(connection, wallet, {
+  preflightCommitment: "confirmed",
+});
+anchor.setProvider(provider);
 
 export default function CreatePool() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
+
+  const programId = new PublicKey(
+    ""
+  );
+
+  const program = new anchor.Program(
+    InfinityPool as anchor.Idl,
+    programId,
+    provider
+  );
 
   const form = useForm<z.infer<typeof createPoolSchema>>({
     resolver: zodResolver(createPoolSchema),
@@ -56,6 +78,30 @@ export default function CreatePool() {
   async function onSubmit(values: z.infer<typeof createPoolSchema>) {
     try {
       setIsSubmitting(true);
+
+      const [poolPDA] = await PublicKey.findProgramAddressSync(
+        [Buffer.from('pool')],
+        program.programId
+      );    
+
+      const tx = await program.methods
+        .initializePool(
+          values.poolName,
+          values.description,
+          new anchor.BN(values.minContribution),
+          new anchor.BN(values.maxContribution),
+          new anchor.BN(values.targetSol)
+        )
+        .accounts({
+          pool: poolPDA,
+          creator: provider.wallet.publicKey,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        })
+        .rpc();
+
+        console.log('Transaction signature:', tx);
+        console.log('Pool PDA:', poolPDA.toString());
+
       const result = await fetch("http://localhost:3000/api/pool", {
         method: "POST",
         body: JSON.stringify(values),
@@ -63,11 +109,11 @@ export default function CreatePool() {
       await result.json();
       setIsSubmitting(false);
       form.reset();
-      toast.success('Pool Created successfully');
+      toast.success("Pool Created successfully");
       router.push("/pool");
     } catch (err) {
       console.log("Error creating pools :", err);
-      toast.error('Error creating pools');
+      toast.error("Error creating pools");
     }
   }
 
