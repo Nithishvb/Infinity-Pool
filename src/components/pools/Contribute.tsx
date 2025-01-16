@@ -18,7 +18,6 @@ import { useFetch } from "@/hooks/useFetch";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import {
   useAppKitAccount,
-  useAppKit,
   useAppKitProvider,
 } from "@/config/config";
 import type { Provider } from "@reown/appkit-adapter-solana/react";
@@ -46,7 +45,6 @@ export default function ContributeToPool() {
   const { address } = useAppKitAccount();
   const { walletProvider } = useAppKitProvider<Provider>("solana");
   const { connection } = useAppKitConnection();
-  const wallet = useAppKit();
 
   const handleContribute = async () => {
     try {
@@ -107,7 +105,6 @@ export default function ContributeToPool() {
         <CardHeader>
           <CardTitle>Contribute to Pool</CardTitle>
           <CardDescription>Add funds to {poolData.name}</CardDescription>
-          <button onClick={() => wallet.open()}>Click me</button>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex justify-between items-center">
