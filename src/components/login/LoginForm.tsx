@@ -1,12 +1,15 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppKit, useAppKitAccount, useAppKitEvents } from "@/config/config";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 export const LoginForm = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const { open } = useAppKit();
   const { data } = useAppKitEvents();
   const { address, embeddedWalletInfo } = useAppKitAccount();
@@ -27,6 +30,7 @@ export const LoginForm = () => {
 
   const storeUserdata = async () => {
     try {
+      setIsLoading(true);
       const userData = {
         email: embeddedWalletInfo?.user?.email || "",
         walletAddress: address,
@@ -40,9 +44,11 @@ export const LoginForm = () => {
       const res = await response.json();
       localStorage.setItem("userAuth", JSON.stringify(res.data));
       toast.success("User signed in");
+      setIsLoading(false);
       router.push("/pool");
     } catch (err) {
       console.log("Error creating user :", err);
+      setIsLoading(false);
     }
   };
 
@@ -55,9 +61,17 @@ export const LoginForm = () => {
         <div className="space-y-4 flex justify-center">
           <Button
             onClick={openAppKit}
+            disabled={isLoading}
             className="w-3/5 bg-[#5E5CDE] hover:bg-[#4A48B0] text-white py-2 rounded"
           >
-            Continue
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Connecting...
+              </>
+            ) : (
+              "Continue"
+            )}
           </Button>
         </div>
       </div>
