@@ -35,32 +35,24 @@ import { createPoolSchema } from "@/lib/zod/schemas/pool";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import * as anchor from "@project-serum/anchor";
-import InfinityPool from "@/config/idl.json";
+import InfinityPoolIdl from "@/config/idl.json";
 import { PublicKey } from "@solana/web3.js";
+import { useAppKitProvider } from "@/config/config";
+import { useAppKitConnection, type Provider } from "@reown/appkit-adapter-solana/react";
+import { AnchorProvider , web3, BN, Idl , Program } from '@coral-xyz/anchor';
 
-const connection = new anchor.web3.Connection(
-  "https://api.devnet.solana.com",
-  "confirmed"
-);
-const provider = new anchor.AnchorProvider(connection, wallet, {
-  preflightCommitment: "confirmed",
-});
-anchor.setProvider(provider);
+// const connection = new Connection("https://api.devnet.solana.com", "processed");
+
 
 export default function CreatePool() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { walletProvider } = useAppKitProvider<Provider>("solana");
+  const { connection } = useAppKitConnection();
 
   const router = useRouter();
 
   const programId = new PublicKey(
     ""
-  );
-
-  const program = new anchor.Program(
-    InfinityPool as anchor.Idl,
-    programId,
-    provider
   );
 
   const form = useForm<z.infer<typeof createPoolSchema>>({
@@ -75,45 +67,138 @@ export default function CreatePool() {
     },
   });
 
+  // function getProgram(provider: anchor.Provider) {
+  //   return new anchor.Program(
+  //     InfinityPoolIdl as anchor.Idl,
+  //     programId,
+  //     provider
+  //   );
+  // }
+
   async function onSubmit(values: z.infer<typeof createPoolSchema>) {
     try {
       setIsSubmitting(true);
 
-      const [poolPDA] = await PublicKey.findProgramAddressSync(
-        [Buffer.from('pool')],
-        program.programId
-      );    
+      // Ensure walletProvider and connection are properly initialized
+      if (
+        !walletProvider ||
+        !walletProvider.publicKey ||
+        !walletProvider.signTransaction ||
+        !connection
+      ) {
+        toast.error("Wallet not connected");
+        setIsSubmitting(false);
+        return;
+      }
 
-      const tx = await program.methods
-        .initializePool(
-          values.poolName,
-          values.description,
-          new anchor.BN(values.minContribution),
-          new anchor.BN(values.maxContribution),
-          new anchor.BN(values.targetSol)
-        )
-        .accounts({
-          pool: poolPDA,
-          creator: provider.wallet.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
-        })
-        .rpc();
+      // const provider = new anchor.AnchorProvider(
+      //   connection,
+      //   {
+      //     publicKey: new PublicKey(walletProvider.publicKey),
+      //     signTransaction: walletProvider.signTransaction,
+      //     signAllTransactions: walletProvider.signAllTransactions,
+      //   },
+      //   {}
+      // );
 
-        console.log('Transaction signature:', tx);
-        console.log('Pool PDA:', poolPDA.toString());
 
+      const [poolPDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from("pool")],
+        programId
+      );
+
+      // const lamports = await connection.getMinimumBalanceForRentExemption(5);
+
+      // const latestBlockhash = await connection?.getLatestBlockhash();
+
+      // const transaction = new Transaction({
+      //   feePayer: new PublicKey(""),
+      //   recentBlockhash: latestBlockhash?.blockhash,
+      // }).add(
+      //   SystemProgram.createAccount({
+      //     fromPubkey: new PublicKey(""),
+      //     newAccountPubkey: poolPDA,
+      //     lamports,
+      //     space: 5,
+      //     programId,
+      //   })
+      // );
+
+      // await walletProvider.sendTransaction(transaction, connection);
+
+      const provider = new AnchorProvider(connection, 
+        {
+          publicKey: new PublicKey(""),
+          signTransaction: walletProvider.signTransaction,
+          signAllTransactions: walletProvider.signAllTransactions,
+        },
+         { commitment: 'confirmed' });
+
+      const program = new Program(InfinityPoolIdl as Idl, provider);
+
+      // Validate programId
+      if (!programId) {
+        throw new Error("Program ID is not defined");
+      }
+
+      console.log("program.methods via rpc", program.rpc, poolPDA);
+
+      const tx = await program.rpc.initializePool(
+        values.poolName,
+        values.description,
+        new BN(values.minContribution),
+        new BN(values.maxContribution),
+        new BN(values.targetSol),
+        {
+          accounts: {
+            pool: poolPDA,
+            creator: provider.wallet.publicKey,
+            systemProgram: web3.SystemProgram.programId,
+          },
+        }
+      );
+
+      // Call the initializePool method
+      // const tx = await program.methods
+      //   .initializePool(
+      //     values.poolName,
+      //     values.description,
+      //     new anchor.BN(values.minContribution),
+      //     new anchor.BN(values.maxContribution),
+      //     new anchor.BN(values.targetSol)
+      //   )
+      //   .accounts({
+      //     pool: poolPDA,
+      //     creator: provider.wallet.publicKey,
+      //     systemProgram: anchor.web3.SystemProgram.programId,
+      //   })
+      //   .rpc();
+
+      console.log("Transaction signature:", tx);
+      console.log("Pool PDA:", poolPDA.toString());
+
+      // API call to store pool metadata in the backend
       const result = await fetch("http://localhost:3000/api/pool", {
         method: "POST",
         body: JSON.stringify(values),
+        headers: { "Content-Type": "application/json" },
       });
-      await result.json();
+
+      if (!result.ok) {
+        throw new Error("Failed to save pool metadata");
+      }
+
+      const jsonResponse = await result.json();
+      console.log("API Response:", jsonResponse);
+
       setIsSubmitting(false);
       form.reset();
       toast.success("Pool Created successfully");
       router.push("/pool");
     } catch (err) {
-      console.log("Error creating pools :", err);
-      toast.error("Error creating pools");
+      console.error("Error creating pool:", err);
+      toast.error("Error creating pool");
+      setIsSubmitting(false);
     }
   }
 

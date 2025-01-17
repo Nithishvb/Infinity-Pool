@@ -24,4 +24,3 @@ function ContextProvider({ children }: { children: ReactNode }) {
 }
 
 export default ContextProvider;
-
